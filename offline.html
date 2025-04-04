@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline Chatbot Demo</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>Offline Chatbot Demo</h1>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <div class="message bot">
+                <p>Hello! I'm your offline AI assistant. How can I help you today?</p>
+            </div>
+        </div>
+        <div class="chat-input">
+            <form id="message-form">
+                <input type="text" id="user-input" placeholder="Type your message here..." autocomplete="off">
+                <button type="submit">Send</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        // DOM elements
+        const chatMessages = document.getElementById('chat-messages');
+        const messageForm = document.getElementById('message-form');
+        const userInput = document.getElementById('user-input');
+
+        // Predefined responses
+        const responses = [
+            "I'm an offline demo version of the chatbot. The full version uses the Google Gemini API.",
+            "I can't actually process your request right now since I'm running in offline mode.",
+            "In the full version, I can answer questions and have conversations using AI.",
+            "Try checking your browser console for any errors with the online version.",
+            "This is just a fallback interface to show how the chat would work.",
+            "You might need to run this app on a server instead of opening the file directly.",
+            "CORS policies might be blocking the API calls when running locally.",
+            "Check that your API key is valid and has the necessary permissions.",
+            "The Gemini API might have rate limits or require additional configuration."
+        ];
+
+        // Event listener for form submission
+        messageForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const message = userInput.value.trim();
+            if (!message) return;
+            
+            // Add user message to chat
+            addMessageToChat('user', message);
+            
+            // Clear input field
+            userInput.value = '';
+            
+            // Get random response
+            const randomIndex = Math.floor(Math.random() * responses.length);
+            const response = responses[randomIndex];
+            
+            // Add bot response after a short delay
+            setTimeout(() => {
+                addMessageToChat('bot', response);
+            }, 500);
+        });
+
+        // Function to add a message to the chat
+        function addMessageToChat(sender, message) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message', sender);
+            
+            const messageText = document.createElement('p');
+            messageText.textContent = message;
+            
+            messageElement.appendChild(messageText);
+            chatMessages.appendChild(messageElement);
+            
+            // Scroll to the bottom of the chat
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            return messageElement;
+        }
+    </script>
+</body>
+</html> 

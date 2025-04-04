@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini API - List Available Models</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #4285f4;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        button {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #3367d6;
+        }
+        #result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gemini API - لیست مدل‌های موجود</h1>
+    <p>با کلیک روی دکمه زیر، لیست مدل‌های موجود در API Gemini نمایش داده می‌شود.</p>
+    
+    <button id="fetchModels">دریافت لیست مدل‌ها</button>
+    
+    <div id="result">
+        <p>نتایج اینجا نمایش داده خواهد شد...</p>
+    </div>
+    
+    <script>
+        const API_KEY = 'AIzaSyCetwNjb_mkMJnzKZzXPryHqoaOtQCkDok';
+        const LIST_MODELS_URL = 'https://generativelanguage.googleapis.com/v1beta/models';
+        
+        document.getElementById('fetchModels').addEventListener('click', fetchModels);
+        
+        async function fetchModels() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<p>در حال دریافت مدل‌ها...</p>';
+            
+            try {
+                const response = await fetch(`${LIST_MODELS_URL}?key=${API_KEY}`);
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error ? data.error.message : `HTTP error ${response.status}`);
+                }
+                
+                // Display the models
+                let output = '<h2>مدل‌های موجود:</h2>';
+                output += '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                
+                resultDiv.innerHTML = output;
+                
+                // Create a simple table of model names
+                if (data.models && data.models.length > 0) {
+                    let tableOutput = '<h3>لیست نام مدل‌ها:</h3>';
+                    tableOutput += '<ul>';
+                    
+                    data.models.forEach(model => {
+                        tableOutput += `<li><strong>${model.name}</strong> - ${model.displayName || 'بدون نام نمایشی'}</li>`;
+                    });
+                    
+                    tableOutput += '</ul>';
+                    resultDiv.innerHTML += tableOutput;
+                }
+                
+            } catch (error) {
+                resultDiv.innerHTML = `<p style="color: red;">خطا: ${error.message}</p>`;
+                console.error('Error fetching models:', error);
+            }
+        }
+    </script>
+</body>
+</html> 
